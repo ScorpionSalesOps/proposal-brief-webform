@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Proposal Brief Builder — Scorpion</title>
+  <title>SEO Audit Generator — Scorpion</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Host+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -351,9 +351,9 @@
   <div class="page-wrap">
     <div class="header">
       <img src="/scorpion-logo.png" alt="Scorpion" class="logo" onerror="this.style.display='none'" />
-      <div class="header-badge">AI Brief Builder</div>
-      <h1>Proposal Brief <span>Generator</span></h1>
-      <p class="header-sub">Fill in the prospect details below and we'll run the full brief automatically.</p>
+      <div class="header-badge">AI Audit Builder</div>
+      <h1>SEO Audit <span>Generator</span></h1>
+      <p class="header-sub">Fill in the prospect details below and we'll run the full audit automatically.</p>
     </div>
 
     <div class="card">
@@ -445,7 +445,7 @@
 
         <button type="submit" class="btn" id="submitBtn">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          Run Brief
+          Submit Company for Audit
         </button>
       </form>
     </div>
@@ -542,7 +542,7 @@
         alert('Submission failed: ' + err.message);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Run Brief';
+        submitBtn.textContent = 'Submit Company for Audit';
       }
     });
   </script>
