@@ -386,17 +386,12 @@
       </form>
     </div>
 
-    <div id="status-section">
+    <div id="status-section" style="display:none">
       <div class="status-card">
         <div class="status-header">
-          <div class="status-dot" id="statusDot"></div>
-          <div class="status-title" id="statusTitle">Generating brief…</div>
+          <div class="status-dot done" id="statusDot"></div>
+          <div class="status-title">Request sent! The team has been notified in Slack.</div>
         </div>
-        <div class="log-box" id="logBox"></div>
-        <a id="briefLink" class="brief-link" style="display:none" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1v-3M10 2h4m0 0v4m0-4L7 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          View Brief
-        </a>
       </div>
     </div>
   </div>
@@ -413,75 +408,24 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Starting…';
-      statusSection.style.display = 'block';
-      logBox.innerHTML = '';
-      briefLink.style.display = 'none';
-      statusDot.className = 'status-dot';
-      statusTitle.textContent = 'Generating brief…';
+      submitBtn.textContent = 'Sending…';
 
-      const formData = Object.fromEntries(new FormData(form));
-
-      let jobId;
       try {
         const res = await fetch('/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Submission failed');
-        jobId = data.jobId;
+        statusSection.style.display = 'block';
+        form.reset();
       } catch (err) {
-        statusTitle.textContent = 'Submission failed: ' + err.message;
-        statusDot.className = 'status-dot error';
+        alert('Submission failed: ' + err.message);
+      } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Run Brief';
-        return;
       }
-
-      submitBtn.textContent = 'Running…';
-
-      const es = new EventSource(`/status/${jobId}`);
-
-      es.onmessage = (event) => {
-        const entry = JSON.parse(event.data);
-
-        if (entry.type === 'done') {
-          es.close();
-          statusDot.className = 'status-dot done';
-          statusTitle.textContent = 'Brief ready!';
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Run Brief';
-          if (entry.netlifyUrl || entry.briefPath) {
-            briefLink.href = entry.netlifyUrl || `/brief/${jobId}`;
-            briefLink.textContent = entry.netlifyUrl ? 'View Brief on Netlify' : 'View Brief';
-            briefLink.style.display = 'flex';
-          }
-          return;
-        }
-
-        if (entry.type === 'error') {
-          es.close();
-          statusDot.className = 'status-dot error';
-          statusTitle.textContent = 'Error: ' + (entry.error || 'Brief generation failed.');
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Run Brief';
-          return;
-        }
-
-        // Log line
-        const line = document.createElement('div');
-        line.className = entry.type === 'stderr' ? 'log-stderr' : entry.type === 'system' ? 'log-system' : '';
-        line.textContent = entry.text;
-        logBox.appendChild(line);
-        logBox.scrollTop = logBox.scrollHeight;
-      };
-
-      es.onerror = () => {
-        // SSE closed server-side after completion — safe to ignore
-        es.close();
-      };
     });
   </script>
 </body>
