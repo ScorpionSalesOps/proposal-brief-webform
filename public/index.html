@@ -177,6 +177,31 @@
       width: 100%;
     }
 
+    select {
+      background: #111111;
+      border: 1px solid #222222;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2371717a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    }
+
+    select:focus {
+      border-color: rgba(0,127,253,0.5);
+      box-shadow: 0 0 0 3px rgba(0,127,253,0.08);
+    }
+
+    select option { background: #111111; }
+
     input::placeholder, textarea::placeholder {
       color: var(--text-tertiary);
     }
@@ -362,15 +387,53 @@
         <hr class="divider" />
         <p class="section-label">Sales Context</p>
         <div class="form-grid">
-          <div class="form-group">
+          <div class="form-group full">
             <label>Rep Name</label>
-            <input type="text" name="repName" placeholder="Your name" />
-            <span class="hint">Shows in the brief's CTA section</span>
-          </div>
-          <div class="form-group">
-            <label>Chili Piper Booking Link</label>
-            <input type="url" name="bookingLink" placeholder="https://scorpion.chilipiper.com/…" />
-            <span class="hint">Your personal link — replaces the generic booking form in the CTA</span>
+            <select name="repName" id="repSelect">
+              <option value="">Select your name…</option>
+              <option value="Aaron Doucet">Aaron Doucet</option>
+              <option value="Adam Long">Adam Long</option>
+              <option value="Alec Frost">Alec Frost</option>
+              <option value="Alec Garner">Alec Garner</option>
+              <option value="Amber Smith">Amber Smith</option>
+              <option value="Andrew Frost">Andrew Frost</option>
+              <option value="Austin Nunez">Austin Nunez</option>
+              <option value="Bobby Romano">Bobby Romano</option>
+              <option value="Brady Wright">Brady Wright</option>
+              <option value="Brett Lorenzini">Brett Lorenzini</option>
+              <option value="Brian Blades">Brian Blades</option>
+              <option value="Brian Davis">Brian Davis</option>
+              <option value="Caiden Certonio">Caiden Certonio</option>
+              <option value="Candice Blair">Candice Blair</option>
+              <option value="Christian Dunwoody">Christian Dunwoody</option>
+              <option value="Dane Minch">Dane Minch</option>
+              <option value="Devin Mercier">Devin Mercier</option>
+              <option value="Dustin Ondrasek">Dustin Ondrasek</option>
+              <option value="Gabriella Ferrara">Gabriella Ferrara</option>
+              <option value="Jaden Larsen">Jaden Larsen</option>
+              <option value="Jake Wright">Jake Wright</option>
+              <option value="James Marshall">James Marshall</option>
+              <option value="Jarrett Tyus">Jarrett Tyus</option>
+              <option value="Kevin Smith">Kevin Smith</option>
+              <option value="Kim Hillman">Kim Hillman</option>
+              <option value="Kyle Gearig">Kyle Gearig</option>
+              <option value="Kyle Henrie">Kyle Henrie</option>
+              <option value="Layne Compston">Layne Compston</option>
+              <option value="Matt Eckhart">Matt Eckhart</option>
+              <option value="Meg Van Leeuwen">Meg Van Leeuwen</option>
+              <option value="Michael Brown">Michael Brown</option>
+              <option value="Michael Smith">Michael Smith</option>
+              <option value="Nathan Reynolds">Nathan Reynolds</option>
+              <option value="Nicolas Gomez">Nicolas Gomez</option>
+              <option value="Omner Vera">Omner Vera</option>
+              <option value="Ron Johns">Ron Johns</option>
+              <option value="Stephanie McHenry">Stephanie McHenry</option>
+              <option value="Taylor Saunders">Taylor Saunders</option>
+              <option value="Tim Demik">Tim Demik</option>
+              <option value="Travis Carter">Travis Carter</option>
+              <option value="Tyler Jorgensen">Tyler Jorgensen</option>
+            </select>
+            <span class="hint">Selects their Chili Piper booking link automatically</span>
           </div>
           <div class="form-group full">
             <label>Discovery Notes</label>
@@ -397,6 +460,50 @@
   </div>
 
   <script>
+    const CP_LINKS = {
+      'Aaron Doucet': 'https://scorpion.chilipiper.com/me/aaron-doucet',
+      'Adam Long': 'https://scorpion.chilipiper.com/me/adam-long',
+      'Alec Frost': 'https://scorpion.chilipiper.com/me/alec-frost',
+      'Alec Garner': 'https://scorpion.chilipiper.com/me/alec-garner',
+      'Amber Smith': 'https://scorpion.chilipiper.com/me/amber-smith',
+      'Andrew Frost': 'https://scorpion.chilipiper.com/me/andrew-frost',
+      'Austin Nunez': 'https://scorpion.chilipiper.com/me/austin-nunez',
+      'Bobby Romano': 'https://scorpion.chilipiper.com/shared/bobby-romano',
+      'Brady Wright': 'https://scorpion.chilipiper.com/me/brady-wright',
+      'Brett Lorenzini': 'https://scorpion.chilipiper.com/me/brett-lorenzini',
+      'Brian Blades': 'https://scorpion.chilipiper.com/me/brian-blades',
+      'Brian Davis': 'https://scorpion.chilipiper.com/me/brian-davis',
+      'Caiden Certonio': 'https://scorpion.chilipiper.com/me/caiden-certonio',
+      'Candice Blair': 'https://scorpion.chilipiper.com/me/candice-blair',
+      'Christian Dunwoody': 'https://scorpion.chilipiper.com/me/christian-dunwoody',
+      'Dane Minch': 'https://scorpion.chilipiper.com/shared/dane-minch',
+      'Devin Mercier': 'https://scorpion.chilipiper.com/me/devin-mercier',
+      'Dustin Ondrasek': 'https://scorpion.chilipiper.com/me/dustin-ondrasek',
+      'Gabriella Ferrara': 'https://scorpion.chilipiper.com/me/gabriella-ferrara',
+      'Jaden Larsen': 'https://scorpion.chilipiper.com/me/jaden-larsen',
+      'Jake Wright': 'https://scorpion.chilipiper.com/shared/jake-wright',
+      'James Marshall': 'https://scorpion.chilipiper.com/me/james-marshall',
+      'Jarrett Tyus': 'https://scorpion.chilipiper.com/me/jarrett-tyus',
+      'Kevin Smith': 'https://scorpion.chilipiper.com/me/kevin-smith',
+      'Kim Hillman': 'https://scorpion.chilipiper.com/me/kim-hillman',
+      'Kyle Gearig': 'https://scorpion.chilipiper.com/me/kyle-gearig',
+      'Kyle Henrie': 'https://scorpion.chilipiper.com/me/kyle-henrie',
+      'Layne Compston': 'https://scorpion.chilipiper.com/me/layne-compston',
+      'Matt Eckhart': 'https://scorpion.chilipiper.com/me/matt-eckhart',
+      'Meg Van Leeuwen': 'https://scorpion.chilipiper.com/me/meg-van-leeuwen',
+      'Michael Brown': 'https://scorpion.chilipiper.com/shared/mike-brown',
+      'Michael Smith': 'https://scorpion.chilipiper.com/me/michael-smith',
+      'Nathan Reynolds': 'https://scorpion.chilipiper.com/me/nathan-reynolds',
+      'Nicolas Gomez': 'https://scorpion.chilipiper.com/me/nicolas-gomez',
+      'Omner Vera': 'https://scorpion.chilipiper.com/me/omner-vera',
+      'Ron Johns': 'https://scorpion.chilipiper.com/me/ron-johns',
+      'Stephanie McHenry': 'https://scorpion.chilipiper.com/me/stephanie-mchenry',
+      'Taylor Saunders': 'https://scorpion.chilipiper.com/me/taylor-saunders',
+      'Tim Demik': 'https://scorpion.chilipiper.com/me/tim-demik',
+      'Travis Carter': 'https://scorpion.chilipiper.com/me/travis-carter',
+      'Tyler Jorgensen': 'https://scorpion.chilipiper.com/me/tyler-jorgensen',
+    };
+
     const form = document.getElementById('briefForm');
     const submitBtn = document.getElementById('submitBtn');
     const statusSection = document.getElementById('status-section');
@@ -414,7 +521,7 @@
         const res = await fetch('/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+          body: JSON.stringify({ ...Object.fromEntries(new FormData(form)), bookingLink: CP_LINKS[document.getElementById('repSelect').value] || '' }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Submission failed');
