@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proposal Brief Builder — Scorpion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Host+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #000000;
+      --bg-card: #0a0a0a;
+      --glass-border: #1a1a1a;
+      --accent: #007FFD;
+      --accent-soft: #B2D6FF;
+      --success: #23BF57;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --text-primary: #FFFFFF;
+      --text-secondary: #BCBEC7;
+      --text-tertiary: #71717a;
+      --font: 'Host Grotesk', 'Inter', sans-serif;
+      --font-display: 'Outfit', 'Host Grotesk', sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 48px 24px 80px;
+    }
+
+    /* Subtle background wash */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,127,253,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      height: 32px;
+      margin-bottom: 28px;
+      opacity: 0.9;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,127,253,0.12);
+      border: 1px solid rgba(0,127,253,0.3);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .header-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    h1 span {
+      color: var(--accent-soft);
+    }
+
+    .header-sub {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .required-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    input, textarea {
+      background: #111111;
+      border: 1px solid #222222;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+      width: 100%;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    input:focus, textarea:focus {
+      border-color: rgba(0,127,253,0.5);
+      box-shadow: 0 0 0 3px rgba(0,127,253,0.08);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.5;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      line-height: 1.4;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--glass-border);
+      margin: 28px 0;
+    }
+
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 20px;
+    }
+
+    /* Submit button */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s var(--ease);
+      margin-top: 28px;
+    }
+
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* Status / progress */
+    #status-section {
+      display: none;
+      margin-top: 24px;
+    }
+
+    .status-card {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .status-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.5s infinite;
+      flex-shrink: 0;
+    }
+
+    .status-dot.done { background: var(--success); animation: none; }
+    .status-dot.error { background: var(--danger); animation: none; }
+
+    .status-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .log-box {
+      background: #080808;
+      border: 1px solid #1a1a1a;
+      border-radius: 8px;
+      padding: 14px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      max-height: 280px;
+      overflow-y: auto;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .log-box .log-stderr { color: var(--warning); }
+    .log-box .log-system { color: var(--text-tertiary); font-style: italic; }
+
+    .brief-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--success);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 16px;
+      transition: opacity 0.2s;
+    }
+
+    .brief-link:hover { opacity: 0.9; }
+
+    @media (max-width: 520px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: 1; }
+      .card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <div class="header">
+      <img src="/scorpion-logo.png" alt="Scorpion" class="logo" onerror="this.style.display='none'" />
+      <div class="header-badge">AI Brief Builder</div>
+      <h1>Proposal Brief <span>Generator</span></h1>
+      <p class="header-sub">Fill in the prospect details below and we'll run the full brief automatically.</p>
+    </div>
+
+    <div class="card">
+      <form id="briefForm">
+
+        <p class="section-label">Prospect Info</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label><span class="required-dot"></span> Client / Firm Name</label>
+            <input type="text" name="clientName" placeholder="Smith Law Group" required />
+          </div>
+          <div class="form-group">
+            <label><span class="required-dot"></span> Website Domain</label>
+            <input type="text" name="domain" placeholder="smithlawgroup.com" required />
+          </div>
+          <div class="form-group">
+            <label>Industry / Vertical</label>
+            <input type="text" name="industry" placeholder="law, hvac, plumbing…" />
+          </div>
+          <div class="form-group">
+            <label>Location / Market</label>
+            <input type="text" name="location" placeholder="Houston, TX" />
+          </div>
+          <div class="form-group full">
+            <label>Competitors</label>
+            <input type="text" name="competitors" placeholder="competitor1.com, competitor2.com — or leave blank to auto-discover" />
+            <span class="hint">Comma-separated domains, or leave blank to auto-discover</span>
+          </div>
+        </div>
+
+        <hr class="divider" />
+        <p class="section-label">Sales Context</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Rep Name</label>
+            <input type="text" name="repName" placeholder="Your name" />
+            <span class="hint">Shows in the brief's CTA section</span>
+          </div>
+          <div class="form-group">
+            <label>Chili Piper Booking Link</label>
+            <input type="url" name="bookingLink" placeholder="https://scorpion.chilipiper.com/…" />
+            <span class="hint">Your personal link — replaces the generic booking form in the CTA</span>
+          </div>
+          <div class="form-group full">
+            <label>Discovery Notes</label>
+            <textarea name="discoveryNotes" placeholder="Paste call notes, objections, pain points, or anything relevant from your discovery conversation…"></textarea>
+            <span class="hint">Enables the Concerns &amp; objection-handling section</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Run Brief
+        </button>
+      </form>
+    </div>
+
+    <div id="status-section">
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-dot" id="statusDot"></div>
+          <div class="status-title" id="statusTitle">Generating brief…</div>
+        </div>
+        <div class="log-box" id="logBox"></div>
+        <a id="briefLink" class="brief-link" style="display:none" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1v-3M10 2h4m0 0v4m0-4L7 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          View Brief
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('briefForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusSection = document.getElementById('status-section');
+    const statusDot = document.getElementById('statusDot');
+    const statusTitle = document.getElementById('statusTitle');
+    const logBox = document.getElementById('logBox');
+    const briefLink = document.getElementById('briefLink');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Starting…';
+      statusSection.style.display = 'block';
+      logBox.innerHTML = '';
+      briefLink.style.display = 'none';
+      statusDot.className = 'status-dot';
+      statusTitle.textContent = 'Generating brief…';
+
+      const formData = Object.fromEntries(new FormData(form));
+
+      let jobId;
+      try {
+        const res = await fetch('/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Submission failed');
+        jobId = data.jobId;
+      } catch (err) {
+        statusTitle.textContent = 'Submission failed: ' + err.message;
+        statusDot.className = 'status-dot error';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Run Brief';
+        return;
+      }
+
+      submitBtn.textContent = 'Running…';
+
+      const es = new EventSource(`/status/${jobId}`);
+
+      es.onmessage = (event) => {
+        const entry = JSON.parse(event.data);
+
+        if (entry.type === 'done') {
+          es.close();
+          statusDot.className = 'status-dot done';
+          statusTitle.textContent = 'Brief ready!';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Run Brief';
+          if (entry.netlifyUrl || entry.briefPath) {
+            briefLink.href = entry.netlifyUrl || `/brief/${jobId}`;
+            briefLink.textContent = entry.netlifyUrl ? 'View Brief on Netlify' : 'View Brief';
+            briefLink.style.display = 'flex';
+          }
+          return;
+        }
+
+        if (entry.type === 'error') {
+          es.close();
+          statusDot.className = 'status-dot error';
+          statusTitle.textContent = 'Error: ' + (entry.error || 'Brief generation failed.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Run Brief';
+          return;
+        }
+
+        // Log line
+        const line = document.createElement('div');
+        line.className = entry.type === 'stderr' ? 'log-stderr' : entry.type === 'system' ? 'log-system' : '';
+        line.textContent = entry.text;
+        logBox.appendChild(line);
+        logBox.scrollTop = logBox.scrollHeight;
+      };
+
+      es.onerror = () => {
+        // SSE closed server-side after completion — safe to ignore
+        es.close();
+      };
+    });
+  </script>
+</body>
+</html>
