@@ -28,6 +28,8 @@ app.post('/submit', async (req, res) => {
     const fieldText = fields.map(f => `*${f.label}:* ${f.value}`).join('\n');
     const notesBlock = discoveryNotes ? `\n\n*Discovery Notes:*\n${discoveryNotes}` : '';
 
+    const autoCommand = `/auto-brief ${clientName}|${domain}||${industry || ''}|${location || ''}|auto|${discoveryNotes || ''}`;
+
     await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -38,6 +40,16 @@ app.post('/submit', async (req, res) => {
             text: {
               type: 'mrkdwn',
               text: `:rocket: *Brief request: ${clientName}*\n${fieldText}${notesBlock}`,
+            },
+          },
+          {
+            type: 'divider',
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `*Run this in Claude Code:*\n\`\`\`${autoCommand}\`\`\``,
             },
           },
         ],
